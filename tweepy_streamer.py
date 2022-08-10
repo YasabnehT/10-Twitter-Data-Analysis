@@ -88,8 +88,15 @@ class TwitterListener(StreamListener):
 class TweetAnalyzer():
     # analyze and categorize content from tweet
     def tweets_to_dataframe(self, tweets):
-        df = pd.DataFrame(data =[tweet.text for tweet in tweets], columns="Tweets")
-        df["id"] = 
+        df = pd.DataFrame(data =[tweet.text for tweet in tweets], columns="tweets")
+        df["id"] = np.array([tweet.id]for tweet in tweets)
+        df['text'] = np.array([tweet.text for tweet in tweets])
+        df['text leng'] = np.array([len(tweet.text) for tweet in tweets])
+        df['date'] = np.array([tweet.created_at for tweet in tweets])
+        df['source'] = np.array([tweet.source for tweet in tweets])
+        df['likes'] = np.array([tweet.favorite_count for tweet in tweets])
+        df['retweets'] = np.array([tweet.retweet_count for tweet in tweets])
+        
         return df
         
 if __name__ == "__main__":
@@ -100,11 +107,12 @@ if __name__ == "__main__":
     tweets = api.user_timeline(screen_name="realDonaldTrump", count=20)
     df= tweet_analyzer.tweets_to_dataframe(tweets)
     print(df.head) # print the first tweet texts
-    print(dir(tweets[0])) # possible field from the first tweet
-    print(tweets[0].id) # id of the first tweet
-    print(tweets[0].retweet_count) # number of retweets for the first tweet
-    print(tweets[0].favorite_count) # num positive sentiments
-    # print(tweets)
+    
+    # print(dir(tweets[0])) # possible field from the first tweet
+    # print(tweets[0].id) # id of the first tweet
+    # print(tweets[0].retweet_count) # number of retweets for the first tweet
+    # print(tweets[0].favorite_count) # num positive sentiments
+    # # print(tweets)
     
     
     # hash_tag_list =  ['donald trumpm','hillary clinton', 'barack obama','bernie sanders']
