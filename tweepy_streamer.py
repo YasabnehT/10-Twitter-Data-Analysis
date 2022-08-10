@@ -1,10 +1,12 @@
-from tweepy.streaming import StreamListener
-from tweepy import OAuthHanndler
+from cProfile import label
+from time import time
+# from tweepy.streaming import StreamListener
+from tweepy.auth import OAuthHanndler
 from tweepy import Stream
 from tweepy import API, Cursor # for data pagination
 import pandas as pd
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 import twitter_credentials
 
@@ -60,7 +62,7 @@ class TwitterStreamer(): # streams twittes
         stream.filter(track=has_tag_list)
 		
 
-class TwitterListener(StreamListener):
+class TwitterListener(Stream):
     '''
     basic listener class that prints recieved tweets to stdout
     '''
@@ -91,7 +93,7 @@ class TweetAnalyzer():
         df = pd.DataFrame(data =[tweet.text for tweet in tweets], columns="tweets")
         df["id"] = np.array([tweet.id]for tweet in tweets)
         df['text'] = np.array([tweet.text for tweet in tweets])
-        df['text leng'] = np.array([len(tweet.text) for tweet in tweets])
+        df['text_leng'] = np.array([len(tweet.text) for tweet in tweets])
         df['date'] = np.array([tweet.created_at for tweet in tweets])
         df['source'] = np.array([tweet.source for tweet in tweets])
         df['likes'] = np.array([tweet.favorite_count for tweet in tweets])
@@ -108,6 +110,34 @@ if __name__ == "__main__":
     df= tweet_analyzer.tweets_to_dataframe(tweets)
     print(df.head) # print the first tweet texts
     
+    # print(np.mean(df["text_len"])) # the average length of tweet text
+    
+    
+    ### num likes for most liked tweet ###
+    print(np.max(df['likes']))
+         
+    ### num retweets of most retweeted tweet ###
+    print(np.max(df['retweets']))
+    
+    # ploting time series data
+    # time_likes = pd.Series(data = df['likes'].values, index=df['date'])
+    # time_likes.plot(figsize=(16,4), color='r')
+    # plt.show()
+    
+    # # time_series retweets
+    # time_retweets = pd.Series(data = df['retweets'].values, index=df['date'])
+    # time_retweets.plot(figsize=(16,4), color='r')
+    # plt.show()
+    
+    # retweets and likes time series
+    time_likes = pd.Series(data = df['likes'].values, index=df['date'])
+    time_likes.plot(figsize=(16,4),label="likes", legend=True)
+    
+    time_retweets = pd.Series(data = df['retweets'].values, index=df['date'])
+    time_retweets.plot(figsize=(16,4), label="retweets", legend = True)
+    plt.show() # plots two time-series data with legends and coloring
+    
+    # 
     # print(dir(tweets[0])) # possible field from the first tweet
     # print(tweets[0].id) # id of the first tweet
     # print(tweets[0].retweet_count) # number of retweets for the first tweet
