@@ -4,8 +4,8 @@ from tweepy import Stream
 from tweepy import API, Cursor # for data pagination
 import pandas as pd
 import numpy as np
-
-
+from textblob import TextBlob # to clean the tweet and analyze sentiment
+import re # regular expression
 import twitter_credentials
 
 ### Use Cursor to extract timeline tweets from friends or yours ###
@@ -86,6 +86,19 @@ class TwitterListener(StreamListener):
 
 
 class TweetAnalyzer():
+    def clean_tweet(self, tweet):
+        return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t])|(\w+:/\/\S+)"," ",tweet).split())
+    
+    def analyze_sentiment(self, tweet):
+        analysis = TextBlob(self.clean_tweet)
+        
+        if analysis.sentiment.polarity > 0:
+            return 1 # positive sentiment
+        elif analysis.sentiment.polarity == 0:
+            return 0 # neutral sentiment
+        else:
+            return -1 #negative sentiment
+            
     # analyze and categorize content from tweet
     def tweets_to_dataframe(self, tweets):
         df = pd.DataFrame(data =[tweet.text for tweet in tweets], columns="tweets")
@@ -106,7 +119,11 @@ if __name__ == "__main__":
     api = twitter_client.get_twitter_client_api()
     tweets = api.user_timeline(screen_name="realDonaldTrump", count=20)
     df= tweet_analyzer.tweets_to_dataframe(tweets)
-    print(df.head) # print the first tweet texts
+    # print(df.head) # print the first tweet texts
+        
+    """
+    dataframe generation and ploting section        
+    """
     
     # print(dir(tweets[0])) # possible field from the first tweet
     # print(tweets[0].id) # id of the first tweet
@@ -125,4 +142,10 @@ if __name__ == "__main__":
     # twitter_client  = TwitterClient('Pycon') # username = pycon
     # # gets 5 user timeline tweets
     # print(twitter_client.get_user_timeline_tweets(5))
+    
+    """
+    Sentiment analysis section
+    """
+    df['sentiment'] = np.array([tweet_analyzer.analyze_sentiment(tweet) for tweet in df['tweets']])
+    print(df.head())
 
