@@ -1,10 +1,11 @@
+#%%
 import numpy as np
 import pandas as pd
 import streamlit as st
 import altair as alt
 from wordcloud import WordCloud
 import plotly.express as px
-from add_data_to_db  import db_fetch_data
+from add_data_to_db import db_fetch_data
 
 st.set_page_config(page_title="Day 5", layout="wide")
 
@@ -95,3 +96,5 @@ wordCloud()
 with st.beta_expander("Show More Graphs"):
     stBarChart()
     langPie()
+
+# %%
