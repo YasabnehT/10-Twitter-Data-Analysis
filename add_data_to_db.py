@@ -14,11 +14,11 @@ def emojiDB(dbName:str)->None:
     query = f"alter database {dbName} CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci;"
     curs.execute(query)
     conn.commit()
-def createDB(dbName:str) -> None:
-    conn, curs = DBConnector()
-    curs.execute(f"create database if not exists {dbName};")
-    conn.commit()
-    curs.close()
+# def createDB(dbName:str) -> None:
+#     conn, curs = DBConnector()
+#     curs.execute(f"create database if not exists {dbName};")
+#     conn.commit()
+#     curs.close()
     
 def createTables(dbName:str) -> None:
     conn,curs = DBConnector(dbName)
@@ -39,7 +39,7 @@ def createTables(dbName:str) -> None:
     curs.close()
     return 
 def preprocess_df(df:pd.DataFrame) -> pd.DataFrame:
-    columns_2_drop = ['Unnamed: 0', 'timestamp', 'sentiment', 'possibly_sensitive', 'original_text']
+    columns_2_drop = ['id_str','truncated', 'truncated','Unnamed: 0', 'timestamp', 'sentiment', 'possibly_sensitive', 'original_text']
     try:
         df = df.drop(columns=columns_2_drop, axis =1)
         df = df.fillna(0)
@@ -88,7 +88,7 @@ def db_fetch_data(*args, many = False, table_name = '', rdf = True, **kwargs) ->
         
         
 if __name__ == "__main__":
-    createDB(dbName='TweetsDB')
+    # createDB(dbName='TweetsDB')
     emojiDB(dbName='TweetsDB')
     createTables(dbName = 'TweetsDB')
     

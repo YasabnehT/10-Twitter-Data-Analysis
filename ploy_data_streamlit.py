@@ -10,8 +10,8 @@ from add_data_to_db import db_fetch_data
 st.set_page_config(page_title="Day 5", layout="wide")
 
 def loadData():
-    query = "select * from TweetInformation"
-    df = db_fetch_data(query, dbName="tweets", rdf=True)
+    query = "select * from TweetVisualizationStreamlit"
+    df = db_fetch_data(query, dbName="TweetsDB", rdf=True)
     return df
 
 def selectHashTag():

@@ -1,9 +1,8 @@
--- use 'TweetsDB';
-CREATE TABLE IF NOT EXISTS 'TweetVisualizationStreamlit'
+CREATE TABLE IF NOT EXISTS TweetVisualizationStreamlit
 (
-    'id' INT NOT NULL AUTO_INCREMENT,
     'created_at' TEXT NOT NULL,
-    'source' VARCHAR(250) NOT NULL,
+    'id' INT NOT NULL AUTOINCREMENT,
+    'source' VARCHAR(200) NOT NULL,
     'clean_text' TEXT DEFAULT NULL,
     'polarity' FLOAT DEFAULT NULL,
     'subjectivity' FLOAT DEFAULT NULL,
